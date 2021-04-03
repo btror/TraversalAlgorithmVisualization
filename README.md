@@ -1,6 +1,8 @@
 # Breadth-First & Depth-First Search GUI (Visual)
 This is a GUI that allows the user to draw custom paths and see how a Breadth-First search algorithm navigates it.
 
+<p align="left"><img src="nbproject/vid_demo.gif" width="675" height="475"></p>
+
 # How it Works
 The top left part of the grid (the gray square) is where the algorithm begins it's search. It will keep searching until it reaches the bottom left part of the grid (the green square). Users can simply click on random spots of the grid and draw borders that the algorithm has to work around. 
 
