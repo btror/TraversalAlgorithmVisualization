@@ -1,5 +1,8 @@
 package traversal;
 
+import pathfinding.Node;
+import pathfinding.Search;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
@@ -7,37 +10,41 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.ArrayList;
 import java.util.Stack;
-import javax.swing.JButton;
-import javax.swing.JColorChooser;
-import javax.swing.SwingUtilities;
+import javax.swing.*;
 import javax.swing.border.LineBorder;
 
 /**
  * Grid class for the Main Class
  *
  * @author brorie3
+ *
+ * This class builds the grid and contains the logic for the traversal algorithms
  */
 public class Grid {
 
     private static JButton[][] grid = new JButton[70][90];
     private static final ArrayList<JButton> paintedButtons = new ArrayList<>();
     private static int speed = 10;
+    private static int pathSpeed = 10;
     private static boolean enableButtons = true;
     private static Color penColor = Color.RED;
     private static Color gridColor = Color.WHITE;
     private static Color algorithmColor = Color.BLUE;
+    private static Color pathColor = Color.GREEN;
     private static Color penBorderColor = Color.decode("#838383");
     private static Color gridBorderColor = Color.decode("#838383");
     private static Color algorithmBorderColor = Color.decode("#838383");
     private static boolean bordersPresent = true;
+    private static JFrame frame;
 
     /**
      * Constructor
      *
      * @param board the grid of the window
      */
-    public Grid(JButton[][] board) {
+    public Grid(JFrame f, JButton[][] board) {
         grid = board;
+        frame = f;
         initGridComponents();
     }
 
@@ -139,6 +146,16 @@ public class Grid {
 
 
     /**
+     * Sets the speed of the A* path animation
+     *
+     * @param level the speed level
+     */
+    public void setPathSpeed(int level) {
+        pathSpeed = level;
+    }
+
+
+    /**
      * Method that starts the breadth-first search animation
      */
     public void breadthFirstSearch() {
@@ -194,6 +211,26 @@ public class Grid {
                 queue.add((row - 1) + "," + col); //go up
                 queue.add((row + 1) + "," + col); //go down
             }
+
+            // path finding
+            Search search = new Search(frame, grid, 90, 70, algorithmColor);
+            ArrayList<Node> path = search.start();
+            System.out.println("path size: " + path.size());
+            for (int i = path.size() - 1; i > -1; i--) {
+                int row = path.get(i).getRow();
+                int col = path.get(i).getCol();
+                try {
+                    Thread.sleep(pathSpeed);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (!bordersPresent) {
+                    algorithmBorderColor = pathColor;
+                }
+                grid[row][col].setBorder(new LineBorder(algorithmBorderColor));
+                grid[row][col].setBackground(pathColor);
+            }
+
         });
         thread.start();
 
@@ -252,6 +289,29 @@ public class Grid {
                 stack.push((row + 1) + "," + col); //go down
 
             }
+            // path finding
+            Search search = new Search(frame, grid, 90, 70, algorithmColor);
+            ArrayList<Node> path = search.start();
+            try {
+
+            } catch (NullPointerException np) {
+                System.out.println("path size: " + path.size());
+            }
+            for (int i = path.size() - 1; i > -1; i--) {
+                int row = path.get(i).getRow();
+                int col = path.get(i).getCol();
+                try {
+                    Thread.sleep(pathSpeed);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (!bordersPresent) {
+                    algorithmBorderColor = pathColor;
+                }
+                grid[row][col].setBorder(new LineBorder(algorithmBorderColor));
+                grid[row][col].setBackground(pathColor);
+            }
+
 
         });
         thread.start();
@@ -328,6 +388,26 @@ public class Grid {
                     jButtons[j].setBackground(algorithmColor);
                     if (!bordersPresent) {
                         algorithmBorderColor = algorithmColor;
+                    }
+                    jButtons[j].setBorder(new LineBorder(algorithmBorderColor));
+                }
+            }
+        }
+    }
+
+
+    /**
+     * changes the color of animation
+     */
+    public void changePathColor() {
+        Color prevColor = pathColor;
+        pathColor = JColorChooser.showDialog(null, "Choose a color", pathColor);
+        for (JButton[] jButtons : grid) {
+            for (int j = 0; j < grid[0].length; j++) {
+                if (jButtons[j].getBackground().equals(prevColor)) {
+                    jButtons[j].setBackground(pathColor);
+                    if (!bordersPresent) {
+                        algorithmBorderColor = pathColor;
                     }
                     jButtons[j].setBorder(new LineBorder(algorithmBorderColor));
                 }

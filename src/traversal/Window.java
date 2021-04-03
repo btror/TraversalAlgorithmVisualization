@@ -18,6 +18,8 @@ import javax.swing.border.LineBorder;
  * Window class for the traversal algorithm visualizer Program
  *
  * @author brorie3
+ *
+ * This class creates the GUI components such as the menu and frame
  */
 public class Window extends JFrame {
 
@@ -45,8 +47,6 @@ public class Window extends JFrame {
 
         initGrid();
         initGameMenu();
-
-        setVisible(true);
     }
 
 
@@ -60,15 +60,21 @@ public class Window extends JFrame {
         JMenu algorithmSpeed = new JMenu("Speed");
         JMenu eraseOptions = new JMenu("Erase");
         JMenu start = new JMenu("Run");
-        //JMenu emojis = new JMenu("Emojis!");
+        JMenu traversalSpeed = new JMenu("Traversal speed");
+        JMenu pathSpeed = new JMenu("A* path speed");
 
         JMenuItem clearGrid = new JMenuItem("Clear grid");
         JMenuItem undoLast = new JMenuItem("Undo last square");
 
-        JMenuItem slow = new JMenuItem("Slow");
-        JMenuItem medium = new JMenuItem("Medium");
-        JMenuItem fast = new JMenuItem("Fast");
-        JMenuItem sfast = new JMenuItem("Super fast");
+        JMenuItem tslow = new JMenuItem("Slow");
+        JMenuItem tmedium = new JMenuItem("Medium");
+        JMenuItem tfast = new JMenuItem("Fast");
+        JMenuItem tsfast = new JMenuItem("Super fast");
+
+        JMenuItem pslow = new JMenuItem("Slow");
+        JMenuItem pmedium = new JMenuItem("Medium");
+        JMenuItem pfast = new JMenuItem("Fast");
+        JMenuItem psfast = new JMenuItem("Super fast");
 
         JMenuItem breadthFirst = new JMenuItem("Breadth-first search");
         JMenuItem depthFirst = new JMenuItem("Depth-first search");
@@ -79,6 +85,7 @@ public class Window extends JFrame {
         JMenuItem highlightColor = new JMenuItem("Change drawing color");
         JMenuItem gridColor = new JMenuItem("Change grid color");
         JMenuItem algorithmColor = new JMenuItem("Change animation color");
+        JMenuItem pathColor = new JMenuItem("Change A* path color");
         JMenuItem removeBorder = new JMenuItem("Remove borders");
         JMenuItem addBorder = new JMenuItem("Add borders");
 
@@ -105,24 +112,43 @@ public class Window extends JFrame {
 
         algorithmColor.addActionListener(e -> grid.changeAlgorithmColor());
 
+        pathColor.addActionListener(e -> grid.changePathColor());
+
         gridColor.addActionListener(e -> grid.changeGridColor());
 
         highlightColor.addActionListener(e -> grid.changePenColor());
 
         undoLast.addActionListener(e -> grid.undoLastSquare());
 
-        slow.addActionListener(e -> grid.setSpeed(100));
+        tslow.addActionListener(e -> grid.setSpeed(100));
 
-        medium.addActionListener(e -> grid.setSpeed(40));
+        tmedium.addActionListener(e -> grid.setSpeed(40));
 
-        fast.addActionListener(e -> grid.setSpeed(10));
+        tfast.addActionListener(e -> grid.setSpeed(10));
 
-        sfast.addActionListener(e -> grid.setSpeed(1));
+        tsfast.addActionListener(e -> grid.setSpeed(1));
 
-        algorithmSpeed.add(slow);
-        algorithmSpeed.add(medium);
-        algorithmSpeed.add(fast);
-        algorithmSpeed.add(sfast);
+        pslow.addActionListener(e -> grid.setPathSpeed(100));
+
+        pmedium.addActionListener(e -> grid.setPathSpeed(40));
+
+        pfast.addActionListener(e -> grid.setPathSpeed(10));
+
+        psfast.addActionListener(e -> grid.setPathSpeed(1));
+
+
+        traversalSpeed.add(tslow);
+        traversalSpeed.add(tmedium);
+        traversalSpeed.add(tfast);
+        traversalSpeed.add(tsfast);
+
+        pathSpeed.add(pslow);
+        pathSpeed.add(pmedium);
+        pathSpeed.add(pfast);
+        pathSpeed.add(psfast);
+
+        algorithmSpeed.add(traversalSpeed);
+        algorithmSpeed.add(pathSpeed);
 
         clearGrid.addActionListener(e -> {
             grid.enableButtons();
@@ -151,6 +177,7 @@ public class Window extends JFrame {
         colorSettings.add(highlightColor);
         colorSettings.add(gridColor);
         colorSettings.add(algorithmColor);
+        colorSettings.add(pathColor);
         gridOptions.add(colorSettings);
 
         borderSettings.add(removeBorder);
@@ -176,7 +203,7 @@ public class Window extends JFrame {
     /**
      * setup the grid
      */
-    public static void initGrid() {
+    public void initGrid() {
         JButton[][] board = new JButton[70][90];
 
         GridLayout layout = new GridLayout(70, 90);
@@ -192,7 +219,7 @@ public class Window extends JFrame {
             }
         }
         panel.add(p);
-        grid = new Grid(board);
+        grid = new Grid(this, board);
 
     }
 
