@@ -1,5 +1,7 @@
 package traversal;
 
+import pathfinding.AStar;
+import pathfinding.DiagonalAStar;
 import pathfinding.Node;
 import pathfinding.Search;
 
@@ -292,11 +294,7 @@ public class Grid {
             // path finding
             Search search = new Search(frame, grid, 90, 70, algorithmColor);
             ArrayList<Node> path = search.start();
-            try {
 
-            } catch (NullPointerException np) {
-                System.out.println("path size: " + path.size());
-            }
             for (int i = path.size() - 1; i > -1; i--) {
                 int row = path.get(i).getRow();
                 int col = path.get(i).getCol();
@@ -316,6 +314,58 @@ public class Grid {
         });
         thread.start();
 
+    }
+
+
+    /**
+     * Method that starts the A* path finding animation
+     */
+    public void aStar() {
+        Thread thread = new Thread(()-> {
+            AStar astar = new AStar(frame, grid, 90, 70, gridColor, algorithmColor, speed);
+            ArrayList<Node> path = astar.start();
+            for (int i = path.size() - 1; i > -1; i--) {
+                int row = path.get(i).getRow();
+                int col = path.get(i).getCol();
+                try {
+                    Thread.sleep(pathSpeed);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (!bordersPresent) {
+                    algorithmBorderColor = pathColor;
+                }
+                grid[row][col].setBorder(new LineBorder(algorithmBorderColor));
+                grid[row][col].setBackground(pathColor);
+            }
+        });
+        thread.start();
+    }
+
+
+    /**
+     * Method that starts the A* path finding animation
+     */
+    public void diagonalAStar() {
+        Thread thread = new Thread(()-> {
+            DiagonalAStar astar = new DiagonalAStar(frame, grid, 90, 70, gridColor, algorithmColor, speed);
+            ArrayList<Node> path = astar.start();
+            for (int i = path.size() - 1; i > -1; i--) {
+                int row = path.get(i).getRow();
+                int col = path.get(i).getCol();
+                try {
+                    Thread.sleep(pathSpeed);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                if (!bordersPresent) {
+                    algorithmBorderColor = pathColor;
+                }
+                grid[row][col].setBorder(new LineBorder(algorithmBorderColor));
+                grid[row][col].setBackground(pathColor);
+            }
+        });
+        thread.start();
     }
 
 

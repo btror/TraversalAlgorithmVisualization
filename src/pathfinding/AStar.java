@@ -2,9 +2,10 @@ package pathfinding;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.PriorityQueue;
 
-public class Search {
+public class AStar {
 
     private final Node[][] grid;
     private final PriorityQueue<Node> open_list = new PriorityQueue<>(10, new NodeComparator()); // sorted by f value
@@ -18,28 +19,35 @@ public class Search {
     private final int width;
     private final int height;
 
-    private final JFrame frame;
     private Color algorithmColor;
+    private int speed;
+
+    private final JFrame frame;
 
     /*
      * Default constructor
      */
-    public Search(JFrame window, JButton[][] tiles, int wi, int hi, Color algoColor) {
-        algorithmColor = algoColor;
-        grid = new Node[hi][wi];
+    public AStar(JFrame window, JButton[][] tiles, int wi, int hi, Color gridColor, Color animationColor, int s) {
+        speed = s;
+        algorithmColor = animationColor;
         width = wi;
         height = hi;
         frame = window;
+        grid = new Node[hi][wi];
         tile_grid = tiles;
         current_node = new Node(0, 0, 0);
         end_node = new Node(69, 89, 0);
         grid[0][0] = current_node;
         grid[69][89] = end_node;
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                if (tiles[i][j].getBackground().equals(algorithmColor)) {
+        for (int i = 0; i < hi; i++) {
+            for (int j = 0; j < wi; j++) {
+                if (tiles[i][j].getBackground().equals(gridColor)) {
                     Node node = new Node(i, j, 0);
                     grid[i][j] = node;
+                } else if (i == 0 && j == 0) {
+                    grid[i][j] = current_node;
+                } else if (i == 69 && j == 89) {
+                    grid[i][j] = end_node;
                 } else {
                     Node node = new Node(i, j, 1);
                     grid[i][j] = node;
@@ -86,7 +94,7 @@ public class Search {
             open_list.remove(open_list.peek());
             System.out.println("open list: " + open_list);
             // check if current node is goal node
-            if (current_node.equals(end_node) ) {
+            if (current_node.equals(end_node)) {
                 System.out.println("current = end");
                 // if yes, generate a path
                 closed_list.add(current_node);
@@ -95,11 +103,14 @@ public class Search {
             } else {
                 // generate neighbors
                 try {
+                    Thread.sleep(speed);
                     calculateNeighborValues();
+
                 } catch (NullPointerException np) {
+                    System.out.println(np);
+                } catch (InterruptedException ie) {
 
                 }
-
                 try {
                     assert open_list.peek() != null;
                     System.out.println("open_list lowest f: " + open_list.peek().getF());
@@ -202,6 +213,7 @@ public class Search {
             if (!open_list.contains(grid[row - 1][col])) {
                 open_list.add(grid[row - 1][col]);
             }
+            tile_grid[row - 1][col].setBackground(algorithmColor);
         }
 
         // east node
@@ -216,6 +228,7 @@ public class Search {
             if (!open_list.contains(grid[row][col + 1])) {
                 open_list.add(grid[row][col + 1]);
             }
+            tile_grid[row][col + 1].setBackground(algorithmColor);
         }
 
         // south node
@@ -230,6 +243,7 @@ public class Search {
             if (!open_list.contains(grid[row + 1][col])) {
                 open_list.add(grid[row + 1][col]);
             }
+            tile_grid[row + 1][col].setBackground(algorithmColor);
         }
 
         // west node
@@ -244,6 +258,7 @@ public class Search {
             if (!open_list.contains(grid[row][col - 1])) {
                 open_list.add(grid[row][col - 1]);
             }
+            tile_grid[row][col - 1].setBackground(algorithmColor);
         }
     }
 
@@ -262,17 +277,5 @@ public class Search {
         }
         return path;
     }
+
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

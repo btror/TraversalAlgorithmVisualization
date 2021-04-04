@@ -78,6 +78,8 @@ public class Window extends JFrame {
 
         JMenuItem breadthFirst = new JMenuItem("Breadth-first search");
         JMenuItem depthFirst = new JMenuItem("Depth-first search");
+        JMenuItem aStar = new JMenuItem("A* (non-diagonal)");
+        JMenuItem diagonalAStar = new JMenuItem("A* (diagonal)");
 
         JMenu colorSettings = new JMenu("Color settings");
         JMenu borderSettings = new JMenu("Border settings");
@@ -168,11 +170,23 @@ public class Window extends JFrame {
             grid.depthFirstSearch();
         });
 
+        aStar.addActionListener(e -> {
+            grid.disableButtons();
+            grid.aStar();
+        });
+
+        diagonalAStar.addActionListener(e -> {
+            grid.disableButtons();
+            grid.diagonalAStar();
+        });
+
         eraseOptions.add(clearGrid);
         eraseOptions.add(undoLast);
 
         start.add(breadthFirst);
         start.add(depthFirst);
+        start.add(aStar);
+        start.add(diagonalAStar);
 
         colorSettings.add(highlightColor);
         colorSettings.add(gridColor);
