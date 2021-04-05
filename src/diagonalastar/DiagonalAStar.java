@@ -1,11 +1,14 @@
-package pathfinding;
+package diagonalastar;
+
+import main.Node;
+import main.NodeComparator;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.PriorityQueue;
 
-public class AStar {
+public class DiagonalAStar {
 
     private final Node[][] grid;
     private final PriorityQueue<Node> open_list = new PriorityQueue<>(10, new NodeComparator()); // sorted by f value
@@ -27,7 +30,7 @@ public class AStar {
     /*
      * Default constructor
      */
-    public AStar(JFrame window, JButton[][] tiles, int wi, int hi, Color gridColor, Color animationColor, int s) {
+    public DiagonalAStar(JFrame window, JButton[][] tiles, int wi, int hi, Color gridColor, Color animationColor, int s) {
         speed = s;
         algorithmColor = animationColor;
         width = wi;
@@ -140,20 +143,28 @@ public class AStar {
         }
 
         Node parent = node.getParent();
+
         if (parent == null) {
-            int xDistance;
+            int xDistance = 0;
             if (col > current_node.getCol()) {
                 xDistance = col - current_node.getCol();
             } else {
                 xDistance = current_node.getCol() - col;
             }
-            int yDistance;
+            int yDistance = 0;
             if (row > current_node.getRow()) {
                 yDistance = row - current_node.getRow();
             } else {
                 yDistance = current_node.getRow() - row;
             }
-            return (xDistance * 10) + (yDistance * 10);
+            if (xDistance != 0 && yDistance != 0) {
+                return 14;
+            } else {
+                return (xDistance * 10) + (yDistance * 10);
+            }
+        }
+        if (col != parent.getCol() && row != parent.getRow()) {
+            return 14 + parent.getG();
         }
         return 10 + parent.getG();
     }
@@ -259,6 +270,66 @@ public class AStar {
                 open_list.add(grid[row][col - 1]);
             }
             tile_grid[row][col - 1].setBackground(algorithmColor);
+        }
+
+        // north east node
+        if (row - 1 > -1 && col + 1 < width && grid[row - 1][col + 1].getType() == 0 && !closed_list.contains(grid[row - 1][col + 1])) {
+            grid[row - 1][col + 1].setParent(current_node);
+            int g = calculateG(grid[row - 1][col + 1]);
+            grid[row - 1][col + 1].setG(g);
+            int h = calculateH(grid[row - 1][col + 1]);
+            grid[row - 1][col + 1].setH(h);
+            grid[row - 1][col + 1].setF();
+            System.out.println("north east node g: " + g + "\nnorth east node h: " + h + "\nnorth east node f: " + grid[row - 1][col + 1].getF());
+            if (!open_list.contains(grid[row - 1][col + 1])) {
+                open_list.add(grid[row - 1][col + 1]);
+            }
+            tile_grid[row - 1][col + 1].setBackground(algorithmColor);
+        }
+
+        // south east node
+        if (row + 1 < height && col + 1 < width && grid[row + 1][col + 1].getType() == 0 && !closed_list.contains(grid[row + 1][col + 1])) {
+            grid[row + 1][col + 1].setParent(current_node);
+            int g = calculateG(grid[row + 1][col + 1]);
+            grid[row + 1][col + 1].setG(g);
+            int h = calculateH(grid[row + 1][col + 1]);
+            grid[row + 1][col + 1].setH(h);
+            grid[row + 1][col + 1].setF();
+            System.out.println("south east node g: " + g + "\nsouth east node h: " + h + "\nsouth east node f: " + grid[row + 1][col + 1].getF());
+            if (!open_list.contains(grid[row + 1][col + 1])) {
+                open_list.add(grid[row + 1][col + 1]);
+            }
+            tile_grid[row + 1][col + 1].setBackground(algorithmColor);
+        }
+
+        // south west node
+        if (row + 1 < height && col - 1 > -1 && grid[row + 1][col - 1].getType() == 0 && !closed_list.contains(grid[row + 1][col - 1])) {
+            grid[row + 1][col - 1].setParent(current_node);
+            int g = calculateG(grid[row + 1][col - 1]);
+            grid[row + 1][col - 1].setG(g);
+            int h = calculateH(grid[row + 1][col - 1]);
+            grid[row + 1][col - 1].setH(h);
+            grid[row + 1][col - 1].setF();
+            System.out.println("south west node g: " + g + "\nsouth west node h: " + h + "\nsouth west node f: " + grid[row + 1][col - 1].getF());
+            if (!open_list.contains(grid[row + 1][col - 1])) {
+                open_list.add(grid[row + 1][col - 1]);
+            }
+            tile_grid[row + 1][col - 1].setBackground(algorithmColor);
+        }
+
+        // north west node
+        if (row - 1 > -1 && col - 1 > -1 && grid[row - 1][col - 1].getType() == 0 && !closed_list.contains(grid[row - 1][col - 1])) {
+            grid[row - 1][col - 1].setParent(current_node);
+            int g = calculateG(grid[row - 1][col - 1]);
+            grid[row - 1][col - 1].setG(g);
+            int h = calculateH(grid[row - 1][col - 1]);
+            grid[row - 1][col - 1].setH(h);
+            grid[row - 1][col - 1].setF();
+            System.out.println("north west node g: " + g + "\nnorth west node h: " + h + "\nnorth west node f: " + grid[row - 1][col - 1].getF());
+            if (!open_list.contains(grid[row - 1][col - 1])) {
+                open_list.add(grid[row - 1][col - 1]);
+            }
+            tile_grid[row - 1][col - 1].setBackground(algorithmColor);
         }
     }
 

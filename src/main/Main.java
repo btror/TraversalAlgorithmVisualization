@@ -1,5 +1,5 @@
 
-package traversal;
+package main;
 
 /**
  *

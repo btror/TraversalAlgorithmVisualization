@@ -1,17 +1,14 @@
-package traversal;
+package main;
 
-import pathfinding.AStar;
-import pathfinding.DiagonalAStar;
-import pathfinding.Node;
-import pathfinding.Search;
+import astar.AStar;
+import bfs.Bfs;
+import dfs.Dfs;
+import diagonalastar.DiagonalAStar;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.ArrayList;
-import java.util.Stack;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
@@ -19,8 +16,8 @@ import javax.swing.border.LineBorder;
  * Grid class for the Main Class
  *
  * @author brorie3
- *
- * This class builds the grid and contains the logic for the traversal algorithms
+ * <p>
+ * This class builds the grid and contains the logic for the main algorithms
  */
 public class Grid {
 
@@ -161,79 +158,8 @@ public class Grid {
      * Method that starts the breadth-first search animation
      */
     public void breadthFirstSearch() {
-        Thread thread = new Thread(() -> {
-
-            boolean[][] visited = new boolean[70][90];
-            int[][] textGrid = new int[70][90];
-
-            for (int i = 0; i < 70; i++) {
-                for (int j = 0; j < 90; j++) {
-                    if (grid[i][j].getBackground().equals(penColor)) {
-                        textGrid[i][j] = 1;
-                        visited[i][j] = true;
-                    } else {
-                        textGrid[i][j] = 0;
-                    }
-                }
-            }
-
-            int height = textGrid.length;
-            int length = textGrid[0].length;
-
-            Queue<String> queue = new LinkedList<>();
-            queue.add(0 + "," + 0);
-
-            System.out.println("Breadth First Search");
-
-            while (!queue.isEmpty()) {
-
-                if (grid[69][89].getBackground().equals(algorithmColor)) {
-                    break;
-                }
-
-                String x = queue.remove();
-                int row = Integer.parseInt(x.split(",")[0]);
-                int col = Integer.parseInt(x.split(",")[1]);
-
-                if (row < 0 || col < 0 || row >= height || col >= length || visited[row][col]) {
-                    continue;
-                }
-
-                visited[row][col] = true;
-                try {
-                    Thread.sleep(speed);
-                } catch (InterruptedException ignored) {}
-                grid[row][col].setBackground(algorithmColor);
-                if (!bordersPresent) {
-                    algorithmBorderColor = algorithmColor;
-                }
-                grid[row][col].setBorder(new LineBorder(algorithmBorderColor));
-                queue.add(row + "," + (col - 1)); //go left
-                queue.add(row + "," + (col + 1)); //go right
-                queue.add((row - 1) + "," + col); //go up
-                queue.add((row + 1) + "," + col); //go down
-            }
-
-            // path finding
-            Search search = new Search(frame, grid, 90, 70, algorithmColor);
-            ArrayList<Node> path = search.start();
-            System.out.println("path size: " + path.size());
-            for (int i = path.size() - 1; i > -1; i--) {
-                int row = path.get(i).getRow();
-                int col = path.get(i).getCol();
-                try {
-                    Thread.sleep(pathSpeed);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if (!bordersPresent) {
-                    algorithmBorderColor = pathColor;
-                }
-                grid[row][col].setBorder(new LineBorder(algorithmBorderColor));
-                grid[row][col].setBackground(pathColor);
-            }
-
-        });
+        Bfs bfs = new Bfs(grid, penColor, algorithmColor, algorithmBorderColor, speed, bordersPresent);
+        Thread thread = new Thread(bfs::start);
         thread.start();
 
     }
@@ -243,75 +169,8 @@ public class Grid {
      * Method that starts the depth-first search animation
      */
     public void depthFirstSearch() {
-        Thread thread = new Thread(() -> {
-            int[][] textGrid = new int[70][90];
-            boolean[][] visited = new boolean[70][90];
-
-            for (int i = 0; i < 70; i++) {
-                for (int j = 0; j < 90; j++) {
-                    if (grid[i][j].getBackground().equals(penColor)) {
-                        textGrid[i][j] = 1;
-                        visited[i][j] = true;
-                    } else {
-                        textGrid[i][j] = 0;
-                    }
-                }
-            }
-
-            int height = textGrid.length;
-            int length = textGrid[0].length;
-
-            Stack<String> stack = new Stack<>();
-            stack.push(0 + "," + 0);
-            System.out.println("Depth-First Search");
-
-            while (!stack.empty()) {
-                if (grid[69][89].getBackground().equals(algorithmColor)) {
-                    break;
-                }
-                String x = stack.pop();
-                int row = Integer.parseInt(x.split(",")[0]);
-                int col = Integer.parseInt(x.split(",")[1]);
-                if (row < 0 || col < 0 || row >= height || col >= length || visited[row][col]) {
-                    continue;
-                }
-
-                visited[row][col] = true;
-                try {
-                    Thread.sleep(speed);
-                } catch (InterruptedException ignored) {}
-                grid[row][col].setBackground(algorithmColor);
-                if (!bordersPresent) {
-                    algorithmBorderColor = algorithmColor;
-                }
-                grid[row][col].setBorder(new LineBorder(algorithmBorderColor));
-                stack.push(row + "," + (col - 1)); //go left
-                stack.push(row + "," + (col + 1)); //go right
-                stack.push((row - 1) + "," + col); //go up
-                stack.push((row + 1) + "," + col); //go down
-
-            }
-            // path finding
-            Search search = new Search(frame, grid, 90, 70, algorithmColor);
-            ArrayList<Node> path = search.start();
-
-            for (int i = path.size() - 1; i > -1; i--) {
-                int row = path.get(i).getRow();
-                int col = path.get(i).getCol();
-                try {
-                    Thread.sleep(pathSpeed);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                if (!bordersPresent) {
-                    algorithmBorderColor = pathColor;
-                }
-                grid[row][col].setBorder(new LineBorder(algorithmBorderColor));
-                grid[row][col].setBackground(pathColor);
-            }
-
-
-        });
+        Dfs dfs = new Dfs(grid, penColor, algorithmColor, algorithmBorderColor, speed, bordersPresent);
+        Thread thread = new Thread(dfs::start);
         thread.start();
 
     }
@@ -321,22 +180,26 @@ public class Grid {
      * Method that starts the A* path finding animation
      */
     public void aStar() {
-        Thread thread = new Thread(()-> {
+        Thread thread = new Thread(() -> {
             AStar astar = new AStar(frame, grid, 90, 70, gridColor, algorithmColor, speed);
             ArrayList<Node> path = astar.start();
-            for (int i = path.size() - 1; i > -1; i--) {
-                int row = path.get(i).getRow();
-                int col = path.get(i).getCol();
-                try {
-                    Thread.sleep(pathSpeed);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            try {
+                for (int i = path.size() - 1; i > -1; i--) {
+                    int row = path.get(i).getRow();
+                    int col = path.get(i).getCol();
+                    try {
+                        Thread.sleep(pathSpeed);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if (!bordersPresent) {
+                        algorithmBorderColor = pathColor;
+                    }
+                    grid[row][col].setBorder(new LineBorder(algorithmBorderColor));
+                    grid[row][col].setBackground(pathColor);
                 }
-                if (!bordersPresent) {
-                    algorithmBorderColor = pathColor;
-                }
-                grid[row][col].setBorder(new LineBorder(algorithmBorderColor));
-                grid[row][col].setBackground(pathColor);
+            } catch (NullPointerException e) {
+                System.out.println(e);
             }
         });
         thread.start();
@@ -347,22 +210,26 @@ public class Grid {
      * Method that starts the A* path finding animation
      */
     public void diagonalAStar() {
-        Thread thread = new Thread(()-> {
+        Thread thread = new Thread(() -> {
             DiagonalAStar astar = new DiagonalAStar(frame, grid, 90, 70, gridColor, algorithmColor, speed);
             ArrayList<Node> path = astar.start();
-            for (int i = path.size() - 1; i > -1; i--) {
-                int row = path.get(i).getRow();
-                int col = path.get(i).getCol();
-                try {
-                    Thread.sleep(pathSpeed);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            try {
+                for (int i = path.size() - 1; i > -1; i--) {
+                    int row = path.get(i).getRow();
+                    int col = path.get(i).getCol();
+                    try {
+                        Thread.sleep(pathSpeed);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    if (!bordersPresent) {
+                        algorithmBorderColor = pathColor;
+                    }
+                    grid[row][col].setBorder(new LineBorder(algorithmBorderColor));
+                    grid[row][col].setBackground(pathColor);
                 }
-                if (!bordersPresent) {
-                    algorithmBorderColor = pathColor;
-                }
-                grid[row][col].setBorder(new LineBorder(algorithmBorderColor));
-                grid[row][col].setBackground(pathColor);
+            } catch (NullPointerException e) {
+                System.out.println(e);
             }
         });
         thread.start();

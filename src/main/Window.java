@@ -1,4 +1,4 @@
-package traversal;
+package main;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.border.LineBorder;
 
 /**
- * Window class for the traversal algorithm visualizer Program
+ * Window class for the main algorithm visualizer Program
  *
  * @author brorie3
  *

@@ -1,4 +1,4 @@
-package pathfinding;
+package main;
 
 public class Node {
     private final int row;

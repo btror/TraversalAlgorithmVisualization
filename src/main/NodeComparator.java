@@ -1,4 +1,6 @@
-package pathfinding;
+package main;
+
+import main.Node;
 
 import java.util.Comparator;
 
