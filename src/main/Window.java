@@ -56,12 +56,17 @@ public class Window extends JFrame {
     public void initGameMenu() {
         JMenuBar menuBar = new JMenuBar();
 
+        JMenu start = new JMenu("Run");
         JMenu gridOptions = new JMenu("View");
         JMenu algorithmSpeed = new JMenu("Speed");
+        JMenu location = new JMenu("Location");
         JMenu eraseOptions = new JMenu("Erase");
-        JMenu start = new JMenu("Run");
+
         JMenu traversalSpeed = new JMenu("Traversal speed");
-        JMenu pathSpeed = new JMenu("A* path speed");
+        JMenu pathSpeed = new JMenu("Path speed");
+
+        JMenuItem startPoint = new JMenuItem("Start point");
+        JMenuItem endPoint = new JMenuItem("End point");
 
         JMenuItem clearGrid = new JMenuItem("Clear grid");
         JMenuItem undoLast = new JMenuItem("Undo last square");
@@ -97,6 +102,10 @@ public class Window extends JFrame {
         JMenuItem addHearts = new JMenuItem("Add hearts");
         JMenuItem addSmiley = new JMenuItem("Add smiley faces");
         JMenuItem removeText = new JMenuItem("Remove text");
+
+        startPoint.addActionListener(e -> grid.setStartLocation());
+
+        endPoint.addActionListener(e -> grid.setEndLocation());
 
         addSmiley.addActionListener(e -> grid.addSmileys());
 
@@ -138,6 +147,8 @@ public class Window extends JFrame {
 
         psfast.addActionListener(e -> grid.setPathSpeed(1));
 
+        location.add(startPoint);
+        location.add(endPoint);
 
         traversalSpeed.add(tslow);
         traversalSpeed.add(tmedium);
@@ -208,6 +219,7 @@ public class Window extends JFrame {
         menuBar.add(start);
         menuBar.add(gridOptions);
         menuBar.add(algorithmSpeed);
+        menuBar.add(location);
         menuBar.add(eraseOptions);
         setJMenuBar(menuBar);
 

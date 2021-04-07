@@ -15,8 +15,12 @@ public class Bfs {
     private Color algorithmBorderColor;
     private final int speed;
     private final boolean bordersPresent;
+    private final int[] startLocation;
+    private final int[] endLocation;
 
-    public Bfs(JButton[][] g, Color pc, Color ac, Color abc, int s, boolean bp) {
+    public Bfs(JButton[][] g, Color pc, Color ac, Color abc, int s, boolean bp, int[] startCoordinate, int[] endCoordinate) {
+        startLocation = startCoordinate;
+        endLocation = endCoordinate;
         grid = g;
         penColor = pc;
         algorithmColor = ac;
@@ -45,12 +49,12 @@ public class Bfs {
 
 
         Queue<String> queue = new LinkedList<>();
-        queue.add(0 + "," + 0);
+        queue.add(startLocation[1] + "," + startLocation[0]);
         System.out.println("Breadth First Search");
 
         while (!queue.isEmpty()) {
 
-            if (grid[69][89].getBackground().equals(algorithmColor)) {
+            if (grid[endLocation[1]][endLocation[0]].getBackground().equals(algorithmColor)) {
                 break;
             }
 

@@ -36,6 +36,9 @@ public class Grid {
     private static boolean bordersPresent = true;
     private static JFrame frame;
 
+    private static final int[] startLocation = new int[2]; // x y
+    private static final int[] endLocation = new int[2]; // x y
+
     /**
      * Constructor
      *
@@ -44,7 +47,34 @@ public class Grid {
     public Grid(JFrame f, JButton[][] board) {
         grid = board;
         frame = f;
+        startLocation[0] = 10;
+        startLocation[1] = 34;
+        endLocation[0] = 80;
+        endLocation[1] = 34;
         initGridComponents();
+    }
+
+
+    public void setStartLocation() {
+        String stringX = JOptionPane.showInputDialog(frame, "x coordinate: ");
+        String stringY = JOptionPane.showInputDialog(frame, "y coordinate: ");
+        int x = Integer.parseInt(stringX);
+        int y = Integer.parseInt(stringY);
+        grid[startLocation[1]][startLocation[0]].setBackground(gridColor);
+        grid[y][x].setBackground(Color.GRAY);
+        startLocation[0] = x;
+        startLocation[1] = y;
+    }
+
+    public void setEndLocation() {
+        String stringX = JOptionPane.showInputDialog(frame, "x coordinate: ");
+        String stringY = JOptionPane.showInputDialog(frame, "y coordinate: ");
+        int x = Integer.parseInt(stringX);
+        int y = Integer.parseInt(stringY);
+        grid[endLocation[1]][endLocation[0]].setBackground(gridColor);
+        grid[y][x].setBackground(Color.GREEN);
+        endLocation[0] = x;
+        endLocation[1] = y;
     }
 
 
@@ -52,8 +82,8 @@ public class Grid {
      * setup the components in the grid
      */
     public static void initGridComponents() {
-        grid[0][0].setBackground(Color.GRAY);
-        grid[69][89].setBackground(Color.GREEN);
+        grid[startLocation[1]][startLocation[0]].setBackground(Color.GRAY);
+        grid[endLocation[1]][endLocation[0]].setBackground(Color.GREEN);
         for (int i = 0; i < 70; i++) {
             for (int j = 0; j < 90; j++) {
                 if (!grid[i][j].getBackground().equals(Color.GRAY) && !grid[i][j].getBackground().equals(Color.GREEN)) {
@@ -158,7 +188,7 @@ public class Grid {
      * Method that starts the breadth-first search animation
      */
     public void breadthFirstSearch() {
-        Bfs bfs = new Bfs(grid, penColor, algorithmColor, algorithmBorderColor, speed, bordersPresent);
+        Bfs bfs = new Bfs(grid, penColor, algorithmColor, algorithmBorderColor, speed, bordersPresent, startLocation, endLocation);
         Thread thread = new Thread(bfs::start);
         thread.start();
 
@@ -169,7 +199,7 @@ public class Grid {
      * Method that starts the depth-first search animation
      */
     public void depthFirstSearch() {
-        Dfs dfs = new Dfs(grid, penColor, algorithmColor, algorithmBorderColor, speed, bordersPresent);
+        Dfs dfs = new Dfs(grid, penColor, algorithmColor, algorithmBorderColor, speed, bordersPresent, startLocation, endLocation);
         Thread thread = new Thread(dfs::start);
         thread.start();
 
@@ -181,7 +211,7 @@ public class Grid {
      */
     public void aStar() {
         Thread thread = new Thread(() -> {
-            AStar astar = new AStar(frame, grid, 90, 70, gridColor, algorithmColor, speed);
+            AStar astar = new AStar(frame, grid, 90, 70, gridColor, algorithmColor, speed, startLocation, endLocation);
             ArrayList<Node> path = astar.start();
             try {
                 for (int i = path.size() - 1; i > -1; i--) {
@@ -211,7 +241,7 @@ public class Grid {
      */
     public void diagonalAStar() {
         Thread thread = new Thread(() -> {
-            DiagonalAStar astar = new DiagonalAStar(frame, grid, 90, 70, gridColor, algorithmColor, speed);
+            DiagonalAStar astar = new DiagonalAStar(frame, grid, 90, 70, gridColor, algorithmColor, speed, startLocation, endLocation);
             ArrayList<Node> path = astar.start();
             try {
                 for (int i = path.size() - 1; i > -1; i--) {
@@ -247,8 +277,8 @@ public class Grid {
             }
         }
         paintedButtons.clear();
-        grid[0][0].setBackground(Color.GRAY);
-        grid[69][89].setBackground(Color.GREEN);
+        grid[startLocation[1]][startLocation[0]].setBackground(Color.GRAY);
+        grid[endLocation[1]][endLocation[0]].setBackground(Color.GREEN);
     }
 
 

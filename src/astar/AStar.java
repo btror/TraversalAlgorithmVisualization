@@ -25,12 +25,17 @@ public class AStar {
     private Color algorithmColor;
     private int speed;
 
+    private final int[] startLocation;
+    private final int[] endLocation;
+
     private final JFrame frame;
 
     /*
      * Default constructor
      */
-    public AStar(JFrame window, JButton[][] tiles, int wi, int hi, Color gridColor, Color animationColor, int s) {
+    public AStar(JFrame window, JButton[][] tiles, int wi, int hi, Color gridColor, Color animationColor, int s, int[] startCoordinate, int[] endCoordinate) {
+        startLocation = startCoordinate;
+        endLocation = endCoordinate;
         speed = s;
         algorithmColor = animationColor;
         width = wi;
@@ -38,18 +43,20 @@ public class AStar {
         frame = window;
         grid = new Node[hi][wi];
         tile_grid = tiles;
-        current_node = new Node(0, 0, 0);
-        end_node = new Node(69, 89, 0);
-        grid[0][0] = current_node;
-        grid[69][89] = end_node;
+        // current_node = new Node(0, 0, 0);
+        // end_node = new Node(69, 89, 0);
+        current_node = new Node(startLocation[1], startLocation[0], 0);
+        end_node = new Node(endLocation[1], endLocation[0], 0);
+        grid[startLocation[1]][startLocation[0]] = current_node;
+        grid[endLocation[1]][endLocation[0]] = end_node;
         for (int i = 0; i < hi; i++) {
             for (int j = 0; j < wi; j++) {
                 if (tiles[i][j].getBackground().equals(gridColor)) {
                     Node node = new Node(i, j, 0);
                     grid[i][j] = node;
-                } else if (i == 0 && j == 0) {
+                } else if (i == startLocation[1] && j == startLocation[0]) {
                     grid[i][j] = current_node;
-                } else if (i == 69 && j == 89) {
+                } else if (i == endLocation[1] && j == endLocation[0]) {
                     grid[i][j] = end_node;
                 } else {
                     Node node = new Node(i, j, 1);

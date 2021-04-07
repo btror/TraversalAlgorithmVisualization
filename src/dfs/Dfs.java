@@ -14,8 +14,12 @@ public class Dfs {
     private Color algorithmBorderColor;
     private final int speed;
     private final boolean bordersPresent;
+    private final int[] startLocation;
+    private final int[] endLocation;
 
-    public Dfs(JButton[][] g, Color pc, Color ac, Color abc, int s, boolean bp) {
+    public Dfs(JButton[][] g, Color pc, Color ac, Color abc, int s, boolean bp, int[] startCoordinate, int[] endCoordinate) {
+        startLocation = startCoordinate;
+        endLocation = endCoordinate;
         grid = g;
         penColor = pc;
         algorithmColor = ac;
@@ -43,11 +47,12 @@ public class Dfs {
         int length = textGrid[0].length;
 
         Stack<String> stack = new Stack<>();
-        stack.push(0 + "," + 0);
+        // stack.push(0 + "," + 0); start
+        stack.push(startLocation[1] + "," + startLocation[0]);
         System.out.println("Depth-First Search");
 
         while (!stack.empty()) {
-            if (grid[69][89].getBackground().equals(algorithmColor)) {
+            if (grid[endLocation[1]][endLocation[0]].getBackground().equals(algorithmColor)) {
                 break;
             }
             String x = stack.pop();
